@@ -22,9 +22,9 @@ app.use(cors())
 app.use(express.json()); 
 app.use(morgan('combined'));
 
-console.log('ELON IS ACTIVE!! ELON IS ACTIVE!!');
+console.log('Server is running now');
 
-app.get('/', (req, res)=> { res.send('Superfly is Active') })
+app.get('/', (req, res)=> { res.send('Welcome to the root route') })
 app.post('/signin', signin.signinAuthentication(db, bcrypt))
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
 app.get('/profile/:id', (req, res) => { profile.handleProfileGet(req, res, db)})
