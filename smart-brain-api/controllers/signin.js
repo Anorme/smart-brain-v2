@@ -25,36 +25,46 @@ const signToken = (email) => {
   return jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '2 days'});
 };
 
-const createSessions = (user) => {
-  //Create JWT token, return user data
+const createSessions = async(user) => {
+  // Create JWT token, return user data
   const { email, id } = user;
   const token = signToken(email);
-  return setToken(token, id)
-    .then (() => ({ success: 'true', userId: id, token }))
-    .catch(console.log)
-};
+  try {
+    await setToken(token,id);
+    return { success: 'true', userId: id, token }
+  } catch (err) {
+    console.log('Error setting session:', err)
+    return { success: 'false', error: err}
+  }
+}
 
 // Save JWT as a key with user id as the value in Redis
 const setToken = async (key, value) =>{ 
   try {
     await client.set(key, value);
+    console.log(`Token sent successfully: key=${key}, value=${value}`)
     return { success: true };
   } catch (err) {
+    console.log('Error setting token:', err)
     return { success: false, error: err }
   }
 };
 
-const getAuthTokenId = (req, res) => {
+// Get id from redis using authorization header value as key
+const getAuthTokenId = async(req, res) => {
   const { authorization } = req.headers;
-   client.get(authorization, (err, reply) => {
-    if (err || !reply) {
-      return res.status(400).json('unauthorised')
-    } else {
-      return res.json({id: reply})
-    }
-  })
+  console.log('Getting id from redis with key:', authorization)
+  const reply = await client.get(authorization);
+  console.log(`Redis reply ${reply}`)
+  if (!reply) {
+    res.status(400).json('unauthorised')
+  } else {
+    res.json({id: reply})
+  }
+  
 }
 
+// Find user in postgres database and return promise for signinAuthentication
 const handleSignin = (db, bcrypt, req, res) => {
   const { email, password } = req.body;
   console.log('Request body', req.body)
