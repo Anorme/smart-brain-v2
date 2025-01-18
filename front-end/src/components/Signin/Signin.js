@@ -12,7 +12,6 @@ class Signin extends React.Component {
 
   componentDidMount() {
     const token = window.sessionStorage.getItem('token');
-    console.log('Retrieved token from sessionStorage', token)
     if (token) {
       fetch ('http://localhost:3000/signin', {
         method: 'post',
@@ -44,7 +43,7 @@ class Signin extends React.Component {
         console.error('Error during fetch:', err)
       })
     } else {
-      console.error('No token found in sessionStorage')
+      console.log('No token found in sessionStorage')
     }
   }
 

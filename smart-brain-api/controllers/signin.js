@@ -42,7 +42,6 @@ const createSessions = async(user) => {
 const setToken = async (key, value) =>{ 
   try {
     await client.set(key, value);
-    console.log(`Token sent successfully: key=${key}, value=${value}`)
     return { success: true };
   } catch (err) {
     console.log('Error setting token:', err)
@@ -53,9 +52,7 @@ const setToken = async (key, value) =>{
 // Get id from redis using authorization header value as key
 const getAuthTokenId = async(req, res) => {
   const { authorization } = req.headers;
-  console.log('Getting id from redis with key:', authorization)
   const reply = await client.get(authorization);
-  console.log(`Redis reply ${reply}`)
   if (!reply) {
     res.status(400).json('unauthorised')
   } else {
@@ -67,7 +64,6 @@ const getAuthTokenId = async(req, res) => {
 // Find user in postgres database and return promise for signinAuthentication
 const handleSignin = (db, bcrypt, req, res) => {
   const { email, password } = req.body;
-  console.log('Request body', req.body)
   if (!email || !password) {
     return Promise.reject('incorrect form submission');
   }
@@ -89,7 +85,6 @@ const handleSignin = (db, bcrypt, req, res) => {
 
 const signinAuthentication = (db, bcrypt) => (req, res) => {
   const { authorization } = req.headers;
-  console.log('Checking auth header', authorization)
   return authorization ? getAuthTokenId(req,res) : handleSignin(db, bcrypt, req, res)
     .then(data => {
       return data.id && data.email ? createSessions(data) : Promise.reject(data)
@@ -100,5 +95,5 @@ const signinAuthentication = (db, bcrypt) => (req, res) => {
 
 module.exports = {
   signinAuthentication,
-
+  redisClient: client
 }

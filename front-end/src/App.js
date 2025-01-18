@@ -47,34 +47,37 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-    const image = document.getElementById('inputimage');
-    const width = Number(image.width);
-    const height = Number(image.height);
+    if (data && data.outputs) {
+      const image = document.getElementById('inputimage');
+      const width = Number(image.width);
+      const height = Number(image.height);
 
-    const dataArray = data.outputs[0].data.regions;
-    const clarifaiFaces = dataArray.map((face) => {
-      const clarifaiFace = face.region_info.bounding_box;
-      // Accessing and rounding the bounding box values
-      const topRow = clarifaiFace.top_row.toFixed(3);
-      const leftCol = clarifaiFace.left_col.toFixed(3);
-      const bottomRow = clarifaiFace.bottom_row.toFixed(3);
-      const rightCol = clarifaiFace.right_col.toFixed(3);
+      const dataArray = data.outputs[0].data.regions;
+      const clarifaiFaces = dataArray.map((face) => {
+        const clarifaiFace = face.region_info.bounding_box;
+        // Accessing and rounding the bounding box values
+        const topRow = clarifaiFace.top_row.toFixed(3);
+        const leftCol = clarifaiFace.left_col.toFixed(3);
+        const bottomRow = clarifaiFace.bottom_row.toFixed(3);
+        const rightCol = clarifaiFace.right_col.toFixed(3);
 
-      //Calculating the face box position 
-      return {
-        leftCol: leftCol * width,
-        topRow: topRow * height,
-        rightCol: width - (rightCol * width),
-        bottomRow: height - (bottomRow * height)
-      }
-    });
-
-    return clarifaiFaces;    
+        //Calculating the face box position 
+        return {
+          leftCol: leftCol * width,
+          topRow: topRow * height,
+          rightCol: width - (rightCol * width),
+          bottomRow: height - (bottomRow * height)
+        }
+      });
+      return clarifaiFaces;
+    }
+    return 
   }
 
   displayFaceBox = (boxes) => {
-    console.log(boxes);
-    this.setState({boxes: boxes});
+    if (boxes) {
+      this.setState({boxes: boxes});
+    }
   }
 
   onInputChange = (event) => {
@@ -83,9 +86,12 @@ class App extends Component {
 
   onPictureSubmit = () => {
   this.setState({imageUrl: this.state.input});
-    fetch('https://smartbrain-server-psi.vercel.app/imageurl', {
+    fetch('http://localhost:3000/imageurl', {
       method: 'post',
-      headers: {'Content-Type' : 'application/json'},
+      headers: {
+        'Content-Type' : 'application/json',
+        'Authorization': window.sessionStorage.getItem('token')
+      },
       body: JSON.stringify({
         input: this.state.input
       })
@@ -93,9 +99,12 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('https://smartbrain-server-psi.vercel.app/image', {
+        fetch('http://localhost:3000/image', {
           method: 'put',
-          headers: {'Content-Type' : 'application/json'},
+          headers: {
+            'Content-Type' : 'application/json',
+            'Authorization': window.sessionStorage.getItem('token')
+          },
           body: JSON.stringify({
           id: this.state.user.id
           })
