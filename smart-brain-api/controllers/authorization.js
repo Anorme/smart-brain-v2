@@ -1,4 +1,4 @@
-const { redisClient } = require('../server');
+const redisClient = require('../redisClient');
 
 const requireAuth = async (req, res, next) => {
   try {

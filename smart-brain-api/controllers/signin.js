@@ -1,14 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { redisClient } = require('../server');
-
-//Connect Redis client and test with seed data
-(async () => {
-  await redisClient.connect();
-  console.log('Redis client connected');
-  await redisClient.set('myKey', 'Active');
-  const value = await redisClient.get('myKey');
-  console.log('Retrieved value:', value);
-})()
+const redisClient = require('../redisClient');
 
 const signToken = (email) => {
   const jwtPayload = { email };
