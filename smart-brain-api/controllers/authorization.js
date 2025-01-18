@@ -1,4 +1,4 @@
-const { redisClient } = require('./signin');
+const { redisClient } = require('../server');
 
 const requireAuth = async (req, res, next) => {
   try {

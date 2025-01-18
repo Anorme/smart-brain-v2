@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 const morgan = require('morgan');
+const redis = require('redis');
 require('dotenv').config();
 
 const register = require('./controllers/register');
@@ -15,6 +16,16 @@ const db = knex({
   // connect to your own database here:
   client: 'pg',
   connection: process.env.POSTGRES_URI
+});
+
+//Setup Redis
+const client = redis.createClient({ 
+  url: process.env.REDIS_URI
+});
+
+//Handle connection errors
+client.on('error', (err) => {
+  console.log('Redis Client Error',err)
 });
 
 const app = express();
@@ -36,3 +47,7 @@ app.post('/imageurl', auth.requireAuth, (req, res) => { image.handleApiCall(req,
 app.listen(3000, ()=> {
   console.log('app is running on port 3000');
 })
+
+module.exports = {
+  redisClient: client
+}

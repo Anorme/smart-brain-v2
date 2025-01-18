@@ -10,9 +10,6 @@ services:
     environment:
       POSTGRES_URI: postgresql://anorme:guessagain@postgres:5432/smart-brain-docker
       REDIS_URI: redis://:guessagain@redis:6379     
-    links: 
-      - postgres
-      - redis 
     ports:
       - "3000:3000"
     volumes:

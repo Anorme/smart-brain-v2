@@ -1,22 +1,12 @@
 const jwt = require('jsonwebtoken');
-const redis = require('redis');
-
-//Setup Redis
-const client = redis.createClient({ 
-  url: process.env.REDIS_URI
-});
-
-//Handle connection errors
-client.on('error', (err) => {
-  console.log('Redis Client Error',err)
-});
+const { redisClient } = require('../server');
 
 //Connect Redis client and test with seed data
 (async () => {
-  await client.connect();
+  await redisClient.connect();
   console.log('Redis client connected');
-  await client.set('myKey', 'Active');
-  const value = await client.get('myKey');
+  await redisClient.set('myKey', 'Active');
+  const value = await redisClient.get('myKey');
   console.log('Retrieved value:', value);
 })()
 
@@ -41,7 +31,7 @@ const createSessions = async(user) => {
 // Save JWT as a key with user id as the value in Redis
 const setToken = async (key, value) =>{ 
   try {
-    await client.set(key, value);
+    await redisClient.set(key, value);
     return { success: true };
   } catch (err) {
     console.log('Error setting token:', err)
@@ -52,7 +42,7 @@ const setToken = async (key, value) =>{
 // Get id from redis using authorization header value as key
 const getAuthTokenId = async(req, res) => {
   const { authorization } = req.headers;
-  const reply = await client.get(authorization);
+  const reply = await redisClient.get(authorization);
   if (!reply) {
     res.status(400).json('unauthorised')
   } else {
@@ -94,6 +84,5 @@ const signinAuthentication = (db, bcrypt) => (req, res) => {
 };
 
 module.exports = {
-  signinAuthentication,
-  redisClient: client
+  signinAuthentication
 }
