@@ -18,7 +18,7 @@ const handleRegister = async (email, name, password, db, bcrypt) => {
           joined: new Date()
         })
       await trx.commit();
-      res.json(user)
+      return user[0];
     } catch (error){
       await trx.rollback()
       throw new Error ('Unable to register');
