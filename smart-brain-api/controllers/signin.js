@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const redisClient = require('../redisClient');
+const redisClient = require('../services/redisClient');
 
 const signToken = (email) => {
   const jwtPayload = { email };
