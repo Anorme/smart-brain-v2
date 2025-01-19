@@ -1,46 +1,5 @@
-const jwt = require('jsonwebtoken');
-const redisClient = require('../services/redisClient');
-
-const signToken = (email) => {
-  const jwtPayload = { email };
-  return jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '2 days'});
-};
-
-const createSessions = async(user) => {
-  // Create JWT token, return user data
-  const { email, id } = user;
-  const token = signToken(email);
-  try {
-    await setToken(token,id);
-    return { success: 'true', userId: id, token }
-  } catch (err) {
-    console.log('Error setting session:', err)
-    return { success: 'false', error: err}
-  }
-}
-
-// Save JWT as a key with user id as the value in Redis
-const setToken = async (key, value) =>{ 
-  try {
-    await redisClient.set(key, value);
-    return { success: true };
-  } catch (err) {
-    console.log('Error setting token:', err)
-    return { success: false, error: err }
-  }
-};
-
-// Get id from redis using authorization header value as key
-const getAuthTokenId = async(req, res) => {
-  const { authorization } = req.headers;
-  const reply = await redisClient.get(authorization);
-  if (!reply) {
-    res.status(400).json('unauthorised')
-  } else {
-    res.json({id: reply})
-  }
-  
-}
+const getAuthTokenId = require('./authController')
+const createSessions = require('../services/authService')
 
 // Find user in postgres database and return promise for signinAuthentication
 const handleSignin = (db, bcrypt, req, res) => {
