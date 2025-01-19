@@ -7,18 +7,15 @@ const register = async (req, res, db, bcrypt) => {
 
   try {
     const user = await handleRegister(email, name, password, db, bcrypt);
-    console.log('Returned user object:', user); // Log the returned user object
 
     if (user && user.id && user.email) {
-      console.log('User object is valid'); // Additional check to confirm user object is valid
       const session = await createSessions(user);
-      console.log('Session created:', session); // Log session
-      res.json(session); // Return session in response
+      res.json(session); 
     } else {
       throw new Error('Invalid user data');
     }
   } catch (err) {
-    console.error(`The final boss: ${err.message}`); // Log the error
+    console.error(`Failed to register user: ${err.message}`);
     res.status(400).json(err.message);
   }
 }
