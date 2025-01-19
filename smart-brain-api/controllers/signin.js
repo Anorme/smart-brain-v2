@@ -1,5 +1,5 @@
-const getAuthTokenId = require('./authController')
-const createSessions = require('../services/authService')
+const { getAuthTokenId } = require('./authController')
+const { createSessions } = require('../services/authService');
 
 // Find user in postgres database and return promise for signinAuthentication
 const handleSignin = (db, bcrypt, req, res) => {
