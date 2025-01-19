@@ -5,10 +5,10 @@ const knex = require('knex');
 const morgan = require('morgan');
 require('dotenv').config();
 
-const register = require('./controllers/register');
-const signin = require('./controllers/signin');
-const profile = require('./controllers/profile');
-const image = require('./controllers/image');
+const register = require('./controllers/registerController');
+const signin = require('./controllers/signinController');
+const profile = require('./controllers/profileController');
+const image = require('./controllers/imageController');
 const auth = require('./middleware/authMiddleware');
 
 const db = knex({ 
