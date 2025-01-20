@@ -10,6 +10,7 @@ const signin = require('./controllers/signinController');
 const profile = require('./controllers/profileController');
 const image = require('./controllers/imageController');
 const auth = require('./middleware/authMiddleware');
+const authController = require('./controllers/authController');
 
 const db = knex({ 
   // connect to your own database here:
@@ -32,6 +33,7 @@ app.get('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileG
 app.post('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileUpdate(req, res, db)})
 app.put('/image', auth.requireAuth, (req, res) => { image.handleImage(req, res, db)})
 app.post('/imageurl', auth.requireAuth, (req, res) => { image.handleApiCall(req, res)})
+app.post('/signout', (req, res) => {authController.signout(req,res)} )
 
 app.listen(3000, ()=> {
   console.log('app is running on port 3000');

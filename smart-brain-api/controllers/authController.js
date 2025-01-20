@@ -12,6 +12,23 @@ const getAuthTokenId = async(req, res) => {
   
 }
 
+const signout = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const deleteToken = await redisClient.del(token);
+    if (deleteToken) {
+      res.json('success')
+    } else {
+      throw new Error ('Unable to delete token')
+    }
+  } catch (err) {
+    err => res.status(400).json(err.message)
+  }
+
+}
+
 module.exports = {
   getAuthTokenId,
+  signout
 }
