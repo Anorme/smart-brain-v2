@@ -1,31 +1,18 @@
 const { getAuthTokenId } = require('./authController')
 const { createSessions } = require('../services/authService');
+const { handleSignin } = require('../services/signinService')
 
 // Find user in postgres database and return promise for signinAuthentication
-const handleSignin = (db, bcrypt, req, res) => {
+const signin = async (db, bcrypt, req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return Promise.reject('incorrect form submission');
-  }
-  return db.select('email', 'hash').from('login')
-    .where('email', '=', email)
-    .then(data => {
-      const isValid = bcrypt.compareSync(password, data[0].hash);
-      if (isValid) {
-        return db.select('*').from('users')
-          .where('email', '=', email)
-          .then(user => user[0])
-          .catch(err => Promise.reject('unable to get user'))
-      } else {
-        return Promise.reject('wrong credentials')
-      }
-    })
-    .catch(err => Promise.reject('wrong credentials'))
+  
+  const user = await handleSignin(email, password, db, bcrypt);
+  return user;
 }
 
 const signinAuthentication = (db, bcrypt) => (req, res) => {
   const { authorization } = req.headers;
-  return authorization ? getAuthTokenId(req,res) : handleSignin(db, bcrypt, req, res)
+  return authorization ? getAuthTokenId(req,res) : signin(db, bcrypt, req, res)
     .then(data => {
       return data.id && data.email ? createSessions(data) : Promise.reject(data)
     })
