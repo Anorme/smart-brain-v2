@@ -1,3 +1,5 @@
+// Find user in postgres database and return promise for signinAuthentication
+
 const handleSignin = async (email, password, db, bcrypt) => {
   if (!email || !password) {
     throw new Error ('Incorrect form submission');

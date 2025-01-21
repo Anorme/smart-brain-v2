@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dropdown,
   DropdownToggle,
@@ -9,6 +9,29 @@ import {
 const ProfileIcon = ({ direction, toggleModal ,onRouteChange, ...args}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => {setDropdownOpen((prevState) => !prevState)};
+
+  const [signout, setSignout ] = useState(false);
+  const logout = () => {setSignout(true)}
+
+  useEffect(() => {
+    const performSignout = async () => {
+      if (signout) {
+        const token = window.sessionStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/signout',{
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ token })
+        })
+        const result = await response.json();
+        if (result === 'success'){
+          window.sessionStorage.removeItem('token');
+          onRouteChange('signout');
+        }
+      }
+    }
+    
+    performSignout()
+  }, [signout, onRouteChange])
 
   return (
     <div className="pa4 tc">
@@ -30,7 +53,7 @@ const ProfileIcon = ({ direction, toggleModal ,onRouteChange, ...args}) => {
           style={{marginTop: '25px', backgroundColor: 'rgba(255,255,255,0.5)'}}
           {...args}>
           <DropdownItem onClick={() => toggleModal()}>View Profile</DropdownItem>
-          <DropdownItem onClick={() => onRouteChange('signout')}>Sign Out</DropdownItem>
+          <DropdownItem onClick={() => logout()}>Sign Out</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
