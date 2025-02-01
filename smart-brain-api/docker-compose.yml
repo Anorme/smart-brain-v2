@@ -9,7 +9,7 @@ services:
     environment:
       - PORT=3001
     ports:
-      - "3001:3001"
+      - "3001"
     volumes:
       - ../front-end/:/usr/src/front-end
 
@@ -24,7 +24,7 @@ services:
       POSTGRES_URI: postgresql://anorme:guessagain@postgres:5432/smart-brain-docker
       REDIS_URI: redis://:guessagain@redis:6379     
     ports:
-      - "3000:3000"
+      - "3000"
     volumes:
       - ./:/usr/src/smart-brain-api 
 
@@ -36,7 +36,7 @@ services:
       POSTGRES_DB: postgres
     build: ./postgres
     ports:
-      - "5432:5432"
+      - "5432"
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d 
 
@@ -45,5 +45,5 @@ services:
     image: "redis:7.4.2"
     command: redis-server --save --requirepass guessagain
     ports:
-      - '6379:6379'
+      - "6379"
   
