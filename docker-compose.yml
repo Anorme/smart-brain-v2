@@ -4,6 +4,7 @@ services:
     container_name: frontend
     build: 
       context: ./front-end/
+      dockerfile: Dockerfile
     command: npm start
     working_dir: /usr/src/front-end
     environment:
@@ -18,6 +19,7 @@ services:
     container_name: backend 
     build: 
       context: ./smart-brain-api/
+      dockerfile: Dockerfile
     command: npm start
     working_dir: /usr/src/smart-brain-api
     environment:
