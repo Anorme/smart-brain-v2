@@ -3,7 +3,7 @@ services:
   smart-brain-frontend:
     container_name: frontend
     build: 
-      context: ../front-end
+      context: ./front-end/
     command: npm start
     working_dir: /usr/src/front-end
     environment:
@@ -11,13 +11,13 @@ services:
     ports:
       - "3001"
     volumes:
-      - ../front-end/:/usr/src/front-end
+      - ./front-end/:/usr/src/front-end
 
   #Backend API
   smart-brain-api:
     container_name: backend 
     build: 
-      context: ./
+      context: ./smart-brain-api/
     command: npm start
     working_dir: /usr/src/smart-brain-api
     environment:
@@ -26,7 +26,7 @@ services:
     ports:
       - "3000"
     volumes:
-      - ./:/usr/src/smart-brain-api 
+      - ./smart-brain-api:/usr/src/smart-brain-api 
 
   #Postgres
   postgres:
@@ -38,7 +38,7 @@ services:
     ports:
       - "5432"
     volumes:
-      - ./postgres:/docker-entrypoint-initdb.d 
+      - ./smart-brain-api/postgres:/docker-entrypoint-initdb.d 
 
   #Redis
   redis:
