@@ -11,5 +11,8 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
+# Expose the internal port
+EXPOSE 3000
+
 #Default command
 CMD [ "/bin/bash" ]

@@ -11,5 +11,8 @@ RUN npm install
 # Copy the rest of the files
 COPY  . . 
 
+# Expose the internal port
+EXPOSE 3001
+
 # Default command
 CMD ["npm", "start"]
