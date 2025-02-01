@@ -1,0 +1,19 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: bbtech
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: smart-brain-v2
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: ranks
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+
+functions:
+  rank:
+    handler: handler.rank
+    events:
+      - httpApi:
+          path: /rank
+          method: get
