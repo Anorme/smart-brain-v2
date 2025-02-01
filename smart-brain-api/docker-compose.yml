@@ -3,30 +3,30 @@ services:
   smart-brain-frontend:
     container_name: frontend
     build: 
-      context: ./front-end/
+      context: ../front-end
     command: npm start
     working_dir: /usr/src/front-end
     environment:
       - PORT=3001
     ports:
-      - "3001"
+      - "3001:3001"
     volumes:
-      - ./front-end/:/usr/src/front-end
+      - ../front-end/:/usr/src/front-end
 
   #Backend API
   smart-brain-api:
     container_name: backend 
     build: 
-      context: ./smart-brain-api/
+      context: ./
     command: npm start
     working_dir: /usr/src/smart-brain-api
     environment:
       POSTGRES_URI: postgresql://anorme:guessagain@postgres:5432/smart-brain-docker
       REDIS_URI: redis://:guessagain@redis:6379     
     ports:
-      - "3000"
+      - "3000:3000"
     volumes:
-      - ./smart-brain-api/:/usr/src/smart-brain-api 
+      - ./:/usr/src/smart-brain-api 
 
   #Postgres
   postgres:
@@ -36,14 +36,14 @@ services:
       POSTGRES_DB: postgres
     build: ./postgres
     ports:
-      - "5432"
+      - "5432:5432"
     volumes:
-      - ./smart-brain-api/postgres:/docker-entrypoint-initdb.d 
+      - ./postgres:/docker-entrypoint-initdb.d 
 
   #Redis
   redis:
     image: "redis:7.4.2"
     command: redis-server --save --requirepass guessagain
     ports:
-      - "6379"
+      - '6379:6379'
   
