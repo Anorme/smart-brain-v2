@@ -1,9 +1,15 @@
-FROM node:22.9.0
+# Use an official image from node as the parent image
+FROM node:22.9.0  
 
-WORKDIR /usr/src/smart-brain-api
+# Set the working directory
+WORKDIR /usr/src/smart-brain-api  
 
-COPY ./ ./
+# Copy the package.json and package-lock.json files and install dependencies
+COPY package*.json ./
+RUN npm install  
 
-RUN npm install
+# Copy the rest of the application
+COPY . .
 
+#Default command
 CMD [ "/bin/bash" ]
