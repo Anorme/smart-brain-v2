@@ -34,7 +34,7 @@ services:
       POSTGRES_USER: anorme 
       POSTGRES_PASSWORD: guessagain
       POSTGRES_DB: postgres
-    build: ./postgres
+    build: ./smart-brain-api/postgres
     ports:
       - "5432"
     volumes:
